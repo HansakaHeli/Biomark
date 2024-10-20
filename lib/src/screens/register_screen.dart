@@ -42,29 +42,29 @@ class _RegisterScreenState extends State<RegisterScreen> {
     super.dispose();
   }
 
-  @override
-  void initState() {
-    super.initState();
-    // Initialize Firebase when the screen is first created
-    print("Call ininstate");
-    initFirebase();
-  }
-
-  // Initialize Firebase
-  void initFirebase()  async{
-    print("calling initFirebase");
-    await Firebase.initializeApp(
-        options: FirebaseOptions(
-            apiKey: 'AIzaSyBsryiFfG10b7CyHlP872MDgJ6tgigBZhY',
-            appId: '1:104597272607:android:fa0524cacb94dcd3effd2a',
-            messagingSenderId: '104597272607',
-            projectId: 'biomark-9669a'
-          // storageBucket: 'myapp-b9yt18.appspot.com',
-          // These are come form gogle-services.json file
-          // look -> https://www.youtube.com/watch?v=_M-GLwuWfoM
-        )
-    );
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   // Initialize Firebase when the screen is first created
+  //   print("Call ininstate");
+  //   initFirebase();
+  // }
+  //
+  // // Initialize Firebase
+  // void initFirebase()  async{
+  //   print("calling initFirebase");
+  //   await Firebase.initializeApp(
+  //       options: FirebaseOptions(
+  //           apiKey: 'AIzaSyBsryiFfG10b7CyHlP872MDgJ6tgigBZhY',
+  //           appId: '1:104597272607:android:fa0524cacb94dcd3effd2a',
+  //           messagingSenderId: '104597272607',
+  //           projectId: 'biomark-9669a'
+  //         // storageBucket: 'myapp-b9yt18.appspot.com',
+  //         // These are come form gogle-services.json file
+  //         // look -> https://www.youtube.com/watch?v=_M-GLwuWfoM
+  //       )
+  //   );
+  // }
 
   //Implement the Registration Logic
   Future<void> _register() async {
@@ -86,8 +86,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
         if (user != null) {
           // Hash the security answers
-          final hashedFullname = HashingUtils.hashData(_fullNameController.text.trim());
-          final hashedemail = HashingUtils.hashData(_emailController.text.trim());
+
+          // final hashedFullname = HashingUtils.hashData(_fullNameController.text.trim());
+          // final hashedemail = HashingUtils.hashData(_emailController.text.trim());
+
+          final fullName = _fullNameController.text.trim();
+          final email = _emailController.text.trim();
+
           final hashedPassword = HashingUtils.hashData(_passwordController.text.trim());
           final hasheddateOfBirth = HashingUtils.hashData(_dateOfBirthController.text.trim());
           final hashedmothersMaidenName = HashingUtils.hashData(_mothersMaidenNameController.text.trim());
@@ -96,8 +101,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
           // Create a Volunteer object
           Volunteer volunteer = Volunteer(
-            fullName: hashedFullname,
-            email: hashedemail,
+            fullName: fullName,
+            email: email,
             password: hashedPassword,
             dateOfBirth: hasheddateOfBirth,
             mothersMaidenName: hashedmothersMaidenName,
@@ -176,7 +181,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
               TextFormField(
                 controller: _dateOfBirthController,
                 decoration: InputDecoration(labelText: 'Data of Birth'),
-                obscureText: true,
                 validator: (value) => Validators.validateDate(value!),
               ),
               SizedBox(height: 20),

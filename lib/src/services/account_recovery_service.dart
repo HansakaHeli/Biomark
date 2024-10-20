@@ -22,7 +22,7 @@ class AccountRecoveryService {
     try{
 
       // Hash the inputs
-      String hashedFullName = HashingUtils.hashData(fullName);
+      //String hashedFullName = HashingUtils.hashData(fullName);
       String hashedDob = HashingUtils.hashData(dob);
       String hashedChildhoodPetsName = HashingUtils.hashData(childhoodPetsName);
       String hashedChildhoodBestFriendsName = HashingUtils.hashData(childhoodBestFriendsName);
@@ -37,7 +37,7 @@ class AccountRecoveryService {
         var storedData = userDoc.data() as Map<String, dynamic>;
 
         // Compare hashed values
-        if(storedData['fullName'] == hashedFullName &&
+        if(storedData['fullName'] == fullName &&
             storedData['dateOfBirth'] == hashedDob &&
             storedData['childhoodPetsName'] == hashedChildhoodPetsName &&
             storedData['childhoodBestFriendsName'] == hashedChildhoodBestFriendsName){

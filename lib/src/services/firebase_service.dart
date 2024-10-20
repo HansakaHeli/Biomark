@@ -18,8 +18,9 @@ class FirebaseService {
   // Fetch volunteer data from Firebase
   Future<Map<String, dynamic>?> getVolunteerData(String uid) async {
     try {
-      DocumentSnapshot snapshot = await _firestore.collection('volunteers').doc(uid).get();
-      return snapshot.data() as Map<String, dynamic>?;
+      DocumentSnapshot<Map<String, dynamic>> snapshot = await _firestore.collection('volunteers').doc(uid).get();
+      //return snapshot.data() as Map<String, dynamic>?;
+      return snapshot.data();
     } catch (e) {
       print('Error fetching volunteer data: $e');
       return null;
@@ -69,6 +70,23 @@ class FirebaseService {
       print('Error fetching profile data: $e');
       return null; // Handle error appropriately, maybe throw or return null
     }
+  }
+
+  // Delete the user's profile from Firebase Firestore
+  Future<void> deleteUserProfile() async{
+
+    User? currentUser = FirebaseAuth.instance.currentUser;
+
+    if (currentUser != null){
+      await FirebaseFirestore.instance
+          .collection('volunteers')
+          .doc(currentUser.uid)
+          .delete();
+
+      // Optionally, delete their authentication record as well
+      await currentUser.delete();
+    }
+
   }
 
 }

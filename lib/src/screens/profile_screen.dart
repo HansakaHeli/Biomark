@@ -1,3 +1,4 @@
+import 'package:biomark_app/src/services/auth_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +14,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   User? _currentUser;
   Map<String, dynamic>? _profileData;
+  Map<String, dynamic>? _volunteerData;
   final FirebaseService _firebaseService = FirebaseService(); // Instance of the service
 
   @override
@@ -20,6 +22,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     super.initState();
     _currentUser = FirebaseAuth.instance.currentUser;
     _fetchProfileData();
+    _fetchVolunteerData();
   }
 
   Future<void> _fetchProfileData() async {
@@ -30,15 +33,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
         _profileData = data;
       });
     }
-
   }
 
-  // Future<void> _signOut() async {
-  //   await AuthHelper.signOut();
-  //   Navigator.pushReplacementNamed(context, LOGIN_SCREEN);
-  // }
+  Future<void> _fetchVolunteerData() async {
 
+    if (_currentUser != null) {
+      Map<String, dynamic>? data = await _firebaseService.getVolunteerData(_currentUser!.uid);
+      setState(() {
+        _volunteerData = data;
+      });
+    }
+  }
 
+  Future<void> _signOut() async {
+    await AuthService().logout();
+    Navigator.pushNamed(context, '/');
+  }
 
 
   @override
@@ -47,10 +57,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
       appBar: AppBar(
         title: Text('Profile'),
         actions: [
-          // IconButton(
-          //   icon: Icon(Icons.logout),
-          //   onPressed: _signOut,
-          // ),
+          IconButton(
+            icon: Icon(Icons.logout),
+            //onPressed: _signOut, // Sign-out function
+            onPressed: _signOut, // Sign-out function
+          ),
         ],
       ),
       body: _profileData == null
@@ -62,11 +73,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
           children: [
             CircleAvatar(
               radius: 50,
-              //backgroundImage: NetworkImage(_currentUser?.photoURL ?? DEFAULT_AVATAR),
+              backgroundImage: AssetImage('lib/src/images/user.jpg'),
             ),
             SizedBox(height: 16),
             Text(
-              'Name: ${_profileData!['fullName'] ?? 'No Name'}',
+              'Name: ${_volunteerData?['fullName'] ?? 'No Name'}',
               style: TextStyle(fontSize: 18),
             ),
             SizedBox(height: 8),
@@ -76,61 +87,72 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             SizedBox(height: 8),
             Divider(),
-            // Personal data from ProfileSetupScreen
             Text(
-              'Date of Birth: ${_profileData!['dob'] ?? 'Not set'}',
+              'Date of Birth: ${_profileData?['dateOfBirth'] ?? 'Not set'}',
               style: TextStyle(fontSize: 16),
             ),
             SizedBox(height: 8),
             Text(
-              'Time of Birth: ${_profileData!['timeOfBirth'] ?? 'Not set'}',
+              'Time of Birth: ${_profileData?['timeOfBirth'] ?? 'Not set'}',
               style: TextStyle(fontSize: 16),
             ),
             SizedBox(height: 8),
             Text(
-              'Location of Birth: ${_profileData!['locationOfBirth'] ?? 'Not set'}',
+              'Location of Birth: ${_profileData?['locationOfBirth'] ?? 'Not set'}',
               style: TextStyle(fontSize: 16),
             ),
             SizedBox(height: 8),
             Text(
-              'Blood Group: ${_profileData!['bloodGroup'] ?? 'Not set'}',
+              'Blood Group: ${_profileData?['bloodGroup'] ?? 'Not set'}',
               style: TextStyle(fontSize: 16),
             ),
             SizedBox(height: 8),
             Text(
-              'Sex: ${_profileData!['sex'] ?? 'Not set'}',
+              'Sex: ${_profileData?['sex'] ?? 'Not set'}',
               style: TextStyle(fontSize: 16),
             ),
             SizedBox(height: 8),
             Text(
-              'Height: ${_profileData!['height'] ?? 'Not set'}',
+              'Height: ${_profileData?['height'] ?? 'Not set'}',
               style: TextStyle(fontSize: 16),
             ),
             SizedBox(height: 8),
             Text(
-              'Ethnicity: ${_profileData!['ethnicity'] ?? 'Not set'}',
+              'Ethnicity: ${_profileData?['ethnicity'] ?? 'Not set'}',
               style: TextStyle(fontSize: 16),
             ),
             SizedBox(height: 8),
             Text(
-              'Eye Colour: ${_profileData!['eyeColor'] ?? 'Not set'}',
+              'Eye Colour: ${_profileData?['eyeColor'] ?? 'Not set'}',
               style: TextStyle(fontSize: 16),
             ),
-            SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () {
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(builder: (context) => EditProfileScreen()),
-                // );
-              },
-              child: Text('Edit Profile'),
+            SizedBox(height: 18),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pushReplacementNamed(context, '/unsubscribe');
+                  },
+                  child: Text('Unsubscribe'),
+                ),
+                SizedBox(width: 50),
+                ElevatedButton.icon(
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/'); // Navigate to home screen
+                  },
+                  icon: Icon(Icons.home),
+                  label: Text('Home'),
+                ),
+              ],
             ),
+
           ],
         ),
       ),
     );
   }
+
 
 
 

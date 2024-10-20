@@ -25,7 +25,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
     final authProvider = Provider.of<AuthsProvider>(context, listen: false);
 
-
     try{
 
       // Login the user using AuthProvider
